@@ -26195,7 +26195,11 @@ async function run() {
         const artifactoryPass = core.getInput('artifactory-password');
         if (configureNpm) {
             await exec.exec('chmod +x ./script/setup.sh');
-            await exec.exec('./script/setup.sh', [artifactoryUser, artifactoryPass]);
+            await exec.exec('./script/setup.sh', [
+                artifactoryUser,
+                artifactoryPass,
+                repositoryNpm
+            ]);
             await exec.exec('npm config list');
         }
     }

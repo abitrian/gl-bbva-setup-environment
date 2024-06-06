@@ -62,10 +62,9 @@ jobs:
       - name: Checkout repo to test
         env:
           PAT: ${{ secrets.PAT }}
-        run: |
-          pwd
-          ls -la
-          git clone https://$PAT@github.com/abitrian/test-component-lit.git working-directory
+        run:
+          git clone https://$PAT@github.com/abitrian/test-component-lit.git
+          working-directory
 
       - name: Test Set up Action
         id: test-action
@@ -82,8 +81,8 @@ jobs:
         working-directory: ./working-directory
         run: npm config set package-lock false && npm install --unsafe-perm
       - name: Build component
-        working-directory: ./test-component-lit
+        working-directory: ./working-directory
         run: cirio build
       - name: Test component
-        working-directory: ./test-component-lit
+        working-directory: ./working-directory
         run: cells lit-component:test
