@@ -73,7 +73,8 @@ export async function run(): Promise<void> {
           }
         }
       )*/
-      await exec.exec('chmod 777 ./script/setup.sh')
+      await exec.exec('chmod +x ./script/setup.sh')
+      await exec.exec('ls -la ./script/')
       await exec.exec('sh', [
         `./script/setup.sh ${artifactoryUser} ${artifactoryPass}`
       ])
