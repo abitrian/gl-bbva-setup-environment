@@ -53,7 +53,12 @@ export async function run(): Promise<void> {
       await exec.exec(
         `echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> /github/home/.npmrc`
       )
-      await exec.exec('ls -la /github/home/.npmrc')
+      await exec.exec('cp /github/home/.npmrc npmrc')
+      await exec.exec(
+        `echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> npmrc`
+      )
+      await exec.exec('cat npmrc')
+      await exec.exec('cp npmrc /github/home/.npmrc')
       await exec.exec('cat /github/home/.npmrc')
     }
   } catch (error) {
