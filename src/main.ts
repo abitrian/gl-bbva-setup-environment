@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import * as fs from 'fs'
 
 /**
  * The main function for the action.
@@ -56,6 +57,28 @@ export async function run(): Promise<void> {
       await exec.exec('cp /github/home/.npmrc npmrc')
       await exec.exec(
         `echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> npmrc`
+      )
+      fs.appendFile(
+        '/github/home/.npmrc',
+        `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`,
+        err => {
+          if (err) {
+            console.error(`Error appending data to file: ${err.message}`)
+          } else {
+            console.log('Data successfully appended to file.')
+          }
+        }
+      )
+      fs.appendFile(
+        'npmrc',
+        `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`,
+        err => {
+          if (err) {
+            console.error(`Error appending data to file: ${err.message}`)
+          } else {
+            console.log('Data successfully appended to file.')
+          }
+        }
       )
       await exec.exec('cat npmrc')
       await exec.exec('cp npmrc /github/home/.npmrc')

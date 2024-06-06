@@ -26179,6 +26179,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.extractAuthString = exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
+const fs = __importStar(__nccwpck_require__(7147));
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -26218,6 +26219,22 @@ async function run() {
             await exec.exec(`echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> /github/home/.npmrc`);
             await exec.exec('cp /github/home/.npmrc npmrc');
             await exec.exec(`echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> npmrc`);
+            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
+                if (err) {
+                    console.error(`Error appending data to file: ${err.message}`);
+                }
+                else {
+                    console.log('Data successfully appended to file.');
+                }
+            });
+            fs.appendFile('npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
+                if (err) {
+                    console.error(`Error appending data to file: ${err.message}`);
+                }
+                else {
+                    console.log('Data successfully appended to file.');
+                }
+            });
             await exec.exec('cat npmrc');
             await exec.exec('cp npmrc /github/home/.npmrc');
             await exec.exec('cat /github/home/.npmrc');
