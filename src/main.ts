@@ -75,7 +75,7 @@ export async function run(): Promise<void> {
       )*/
 
       await exec.exec('sh', [
-        `res/scripts/setup.sh ${artifactoryUser} ${artifactoryPass}`
+        `script/setup.sh ${artifactoryUser} ${artifactoryPass}`
       ])
 
       await exec.exec('cat /github/home/.npmrc')
