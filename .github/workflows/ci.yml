@@ -65,7 +65,6 @@ jobs:
         run: |
           pwd
           ls -la
-          echo $NPM_CONFIG_USERCONFIG
           git clone https://$PAT@github.com/abitrian/test-component-lit.git working-directory
 
       - name: Test Set up Action
