@@ -26213,7 +26213,7 @@ async function run() {
             await exec.exec(`npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`);
             await exec.exec('npm config list');
             core.info('Generate token for Artifactory');
-            await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
+            await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure  | grep _auth`, undefined, options);
             core.info('myOutput :: ' + myOutput);
             TOKEN = removeEmptyAttributes(extractAuthString(myOutput));
             core.info(`Store token for Artifactory :: ${TOKEN}`);

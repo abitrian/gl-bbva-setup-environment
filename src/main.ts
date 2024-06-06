@@ -43,7 +43,7 @@ export async function run(): Promise<void> {
 
       core.info('Generate token for Artifactory')
       await exec.exec(
-        `curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`,
+        `curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure  | grep _auth`,
         undefined,
         options
       )
