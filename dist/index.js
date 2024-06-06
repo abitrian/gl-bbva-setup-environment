@@ -26216,27 +26216,14 @@ async function run() {
             await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
             TOKEN = extractAuthString(myOutput);
             core.info(`Store token for Artifactory :: ${TOKEN}`);
-            await exec.exec(`echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> /github/home/.npmrc`);
-            await exec.exec('cp /github/home/.npmrc npmrc');
-            await exec.exec(`echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> npmrc`);
             fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
                 if (err) {
-                    console.error(`Error appending data to file: ${err.message}`);
+                    core.error(`Error appending config data to file: ${err.message}`);
                 }
                 else {
-                    console.log('Data successfully appended to file.');
+                    core.info('Config data successfully appended to config file.');
                 }
             });
-            fs.appendFile('npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
-                if (err) {
-                    console.error(`Error appending data to file: ${err.message}`);
-                }
-                else {
-                    console.log('Data successfully appended to file.');
-                }
-            });
-            await exec.exec('cat npmrc');
-            await exec.exec('cp npmrc /github/home/.npmrc');
             await exec.exec('cat /github/home/.npmrc');
         }
     }
