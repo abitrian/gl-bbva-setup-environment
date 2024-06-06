@@ -47,18 +47,36 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    container:
+      image: artifactory.globaldevtools.bbva.com:443/gl-cells-docker-local/cells/arch/cells_devops/cicd-cells-k8s:cells-4.2.0
+      credentials:
+        username: andres.bitrian.tech
+        password: ${{ secrets.ARTIFACTORY_TOKEN }}
+      options: --cpus 1 --memory 4g --user root
 
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Test Local Action
+      - name: Checkout repo to test
+        env:
+          PAT: ${{ secrets.PAT }}
+        run: |
+          pwd
+          git clone https://$PAT@github.com/abitrian/test-component-lit.git working-directory
+
+      - name: Test Set up Action
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          configure-npm: 'true'
+          configure-gradle: 'true'
+          configure-bower: 'true'
+          repository-npm: 'gl-bbva-npm-virtual'
+          artifactory-user: ${{ secrets.ARTUSERNAME }}
+          artifactory-password: ${{ secrets.ARTPASSWORD }}
 
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+      - name: Install dependencies
+        working-directory: ./working-directory
+        run: npm config set package-lock false && npm install --unsafe-perm

@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import * as exec from '@actions/exec'
 
 /**
  * The main function for the action.
@@ -7,20 +7,93 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const configureNpm = core.getInput('configure-npm')
+    const repositoryNpm = core.getInput('repository-npm')
+    const configureBower = core.getInput('configure-bower')
+    const repositoryBower = core.getInput('repository-bower')
+    const configureGradle = core.getInput('configure-gradle')
+    /**
+     * The repository Gradle value obtained from the input.
+     * @type {string}
+     */
+    /**
+     * The repository Gradle value obtained from the input.
+     * @type {string}
+     */
+    const repositoryGradle = core.getInput('repository-gradle')
+    /**
+     * The username for accessing Artifactory.
+     * @type {string}
+     */
+    const artifactoryUser = core.getInput('artifactory-user')
+    /**
+     * The password for accessing Artifactory.
+     * @type {string}
+     */
+    const artifactoryPass = core.getInput('artifactory-password')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    let TOKEN = ''
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    // Create a variable to store the output
+    let myOutput = ''
+    let myError = ''
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    // Capture the output of the command
+    const options: exec.ExecOptions = {}
+    options.listeners = {
+      stdout: (data: Buffer) => {
+        myOutput += data.toString()
+      },
+      stderr: (data: Buffer) => {
+        myError += data.toString()
+      }
+    }
+
+    if (configureNpm) {
+      core.info('Set up Artifactory registry')
+      await exec.exec(
+        `npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`
+      )
+      //exec.exec("cat ~/.npmrc");
+
+      core.info('Generate token for Artifactory')
+      /*shell.exec(`TOKEN=$(curl -s -u${{artifactoryUser}}:${{artifactoryPass}} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure | grep _auth)`);
+      shell.exec("cat ~/.npmrc");*/
+      // Run the shell command
+      await exec.exec(
+        `curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`,
+        undefined,
+        options
+      )
+
+      // Print the captured output
+      core.info(`Output: ${myOutput}`)
+      core.info(`Error: ${myError}`)
+
+      TOKEN = extractAuthString(myOutput) as string
+
+      /*
+        exec.exec(`curl -s -u${{ artifactoryUser }}:${{ artifactoryPass }} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure | grep _auth`, (error, stdout, stderr) => {
+          core.info("STDOUT:", stdout, ", STDERR:", stderr);
+          TOKEN = stdout;
+        });
+        */
+
+      core.info('Store token for Artifactory')
+      await exec.exec(
+        `echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`
+      )
+      await exec.exec('cat ~/.npmrc')
+    }
   } catch (error) {
-    // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
+
+export function extractAuthString(input: string) {
+  const regex = /_auth\s*=\s*(.*)/
+  const match = input.match(regex)
+  return match ? match[1].split('\n')[0] : null
+}
+
+

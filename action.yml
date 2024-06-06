@@ -1,24 +1,36 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Add your action's branding here. This will appear on the GitHub Marketplace.
-branding:
-  icon: 'heart'
-  color: 'red'
-
-# Define your inputs here.
+name: 'Cells Set up environment'
+description: 'Set up build environment for Cells'
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  configure-npm:
+    description: 'Flag to configure npm'
+    required: false
+    default: 'true'
+  configure-gradle:
+    description: 'Flag to configure gradle'
+    required: false
+    default: 'true'
+  configure-bower:
+    description: 'Flag to configure bower'
+    required: false
+    default: 'true'
+  repository-npm:
+    description: 'Repository to use for npm'
+    required: false
+    default: 'gl-bbva-npm-virtual'
+  repository-bower:
+    description: 'Repository to use for npm'
+    required: false
+    default: 'gl-bbva-npm-virtual'
+  repository-gradle:
+    description: 'Repository to use for npm'
+    required: false
+    default: 'gl-bbva-npm-virtual'
+  artifactory-user:
+    description: 'Artifactory User'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
-
+  artifactory-password:
+    description: 'Artifactory User'
+    required: true
 runs:
-  using: node20
-  main: dist/index.js
+  using: 'node20'
+  main: 'dist/index.js'
