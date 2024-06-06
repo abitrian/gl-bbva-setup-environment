@@ -26176,7 +26176,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.extractAuthString = exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 /**
@@ -26242,9 +26242,9 @@ async function run() {
                 TOKEN = stdout;
               });
               */
-            core.info('Store token for Artifactory');
+            core.info(`Store token for Artifactory :: ${TOKEN}`);
             await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`);
-            await exec.exec('cat ~/.npmrc');
+            //await exec.exec('cat ~/.npmrc')
         }
     }
     catch (error) {
@@ -26258,6 +26258,7 @@ function extractAuthString(input) {
     const match = input.match(regex);
     return match ? match[1].split('\n')[0] : null;
 }
+exports.extractAuthString = extractAuthString;
 
 
 /***/ }),

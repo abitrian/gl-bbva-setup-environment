@@ -79,11 +79,11 @@ export async function run(): Promise<void> {
         });
         */
 
-      core.info('Store token for Artifactory')
+      core.info(`Store token for Artifactory :: ${TOKEN}`)
       await exec.exec(
         `echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`
       )
-      await exec.exec('cat ~/.npmrc')
+      //await exec.exec('cat ~/.npmrc')
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
@@ -95,5 +95,3 @@ export function extractAuthString(input: string) {
   const match = input.match(regex)
   return match ? match[1].split('\n')[0] : null
 }
-
-
