@@ -26214,10 +26214,18 @@ async function run() {
             await exec.exec('npm config list');
             core.info('Generate token for Artifactory');
             await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
+            core.info('myOutput :: ' + myOutput);
             TOKEN = removeEmptyAttributes(extractAuthString(myOutput));
             core.info(`Store token for Artifactory :: ${TOKEN}`);
-            core.info(`Store token for Artifactory :: ${TOKEN}`);
-            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
+            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:\\${TOKEN}`, err => {
+                if (err) {
+                    core.error(`Error appending config data to file: ${err.message}`);
+                }
+                else {
+                    core.info('Config data successfully appended to config file.');
+                }
+            });
+            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:_authToken=${TOKEN}`, err => {
                 if (err) {
                     core.error(`Error appending config data to file: ${err.message}`);
                 }
