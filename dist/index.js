@@ -26224,8 +26224,6 @@ async function run() {
             }
         };
         if (configureNpm) {
-            await exec.exec('pwd');
-            await exec.exec('ls -la');
             core.info('Set up Artifactory registry');
             await exec.exec(`npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`);
             //exec.exec("cat ~/.npmrc");
@@ -26234,9 +26232,6 @@ async function run() {
             shell.exec("cat ~/.npmrc");*/
             // Run the shell command
             await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
-            // Print the captured output
-            core.info(`Output: ${myOutput}`);
-            core.info(`Error: ${myError}`);
             TOKEN = extractAuthString(myOutput);
             /*
               exec.exec(`curl -s -u${{ artifactoryUser }}:${{ artifactoryPass }} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure | grep _auth`, (error, stdout, stderr) => {
@@ -26246,7 +26241,7 @@ async function run() {
               */
             core.info(`Store token for Artifactory :: ${TOKEN}`);
             await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`);
-            await exec.exec('ls -la');
+            await exec.exec('ls -la ~');
             //await exec.exec('cat ~/.npmrc')
         }
     }

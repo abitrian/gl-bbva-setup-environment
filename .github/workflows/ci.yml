@@ -66,7 +66,6 @@ jobs:
           pwd
           ls -la
           git clone https://$PAT@github.com/abitrian/test-component-lit.git working-directory
-          ls -la
 
       - name: Test Set up Action
         id: test-action
@@ -81,4 +80,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./working-directory
-        run: npm config set package-lock false && npm install --unsafe-perm
+        run: |
+          pwd
+          ls -la
+          npm config set package-lock false && npm install --unsafe-perm
