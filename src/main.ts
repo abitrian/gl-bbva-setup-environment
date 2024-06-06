@@ -9,27 +9,11 @@ export async function run(): Promise<void> {
   try {
     const configureNpm = core.getInput('configure-npm')
     const repositoryNpm = core.getInput('repository-npm')
-    const configureBower = core.getInput('configure-bower')
-    const repositoryBower = core.getInput('repository-bower')
-    const configureGradle = core.getInput('configure-gradle')
-    /**
-     * The repository Gradle value obtained from the input.
-     * @type {string}
-     */
-    /**
-     * The repository Gradle value obtained from the input.
-     * @type {string}
-     */
-    const repositoryGradle = core.getInput('repository-gradle')
-    /**
-     * The username for accessing Artifactory.
-     * @type {string}
-     */
+    //const configureBower = core.getInput('configure-bower')
+    //const repositoryBower = core.getInput('repository-bower')
+    //const configureGradle = core.getInput('configure-gradle')
+    //const repositoryGradle = core.getInput('repository-gradle')
     const artifactoryUser = core.getInput('artifactory-user')
-    /**
-     * The password for accessing Artifactory.
-     * @type {string}
-     */
     const artifactoryPass = core.getInput('artifactory-password')
 
     let TOKEN = ''
@@ -54,7 +38,7 @@ export async function run(): Promise<void> {
       await exec.exec(
         `npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`
       )
-      //exec.exec("cat ~/.npmrc");
+      await exec.exec('npm config list')
 
       core.info('Generate token for Artifactory')
       /*shell.exec(`TOKEN=$(curl -s -u${{artifactoryUser}}:${{artifactoryPass}} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure | grep _auth)`);
