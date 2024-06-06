@@ -26176,7 +26176,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.removeEmptyAttributes = exports.extractAuthString = exports.run = void 0;
+exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 /**
@@ -26193,54 +26193,10 @@ async function run() {
         //const repositoryGradle = core.getInput('repository-gradle')
         const artifactoryUser = core.getInput('artifactory-user');
         const artifactoryPass = core.getInput('artifactory-password');
-        let TOKEN = '';
-        // Create a variable to store the output
-        let myOutput = '';
-        let myError = '';
-        // Capture the output of the command
-        const options = {};
-        options.listeners = {
-            stdout: (data) => {
-                myOutput += data.toString();
-            },
-            stderr: (data) => {
-                myError += data.toString();
-            }
-        };
         if (configureNpm) {
-            core.info('Set up Artifactory registry');
-            await exec.exec(`npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`);
-            await exec.exec('npm config list');
-            core.info('Generate token for Artifactory');
-            await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
-            core.info('myOutput :: ' + myOutput);
-            TOKEN = removeEmptyAttributes(extractAuthString(myOutput));
-            core.info(`Store token for Artifactory :: ${TOKEN}`);
-            /*fs.appendFile(
-              '/github/home/.npmrc',
-              `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:${TOKEN}`,
-              err => {
-                if (err) {
-                  core.error(`Error appending config data to file: ${err.message}`)
-                } else {
-                  core.info('Config data successfully appended to config file.')
-                }
-              }
-            )
-            fs.appendFile(
-              '/github/home/.npmrc',
-              `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:_authToken=${TOKEN}`,
-              err => {
-                if (err) {
-                  core.error(`Error appending config data to file: ${err.message}`)
-                } else {
-                  core.info('Config data successfully appended to config file.')
-                }
-              }
-            )*/
             await exec.exec('chmod +x ./script/setup.sh');
             await exec.exec('./script/setup.sh', [artifactoryUser, artifactoryPass]);
-            await exec.exec('cat /github/home/.npmrc');
+            await exec.exec('npm config list');
         }
     }
     catch (error) {
@@ -26249,16 +26205,6 @@ async function run() {
     }
 }
 exports.run = run;
-function extractAuthString(input) {
-    const regex = /_auth\s*=\s*(.*)/;
-    const match = input.match(regex);
-    return match ? match[1].split('\n')[0] : null;
-}
-exports.extractAuthString = extractAuthString;
-function removeEmptyAttributes(input) {
-    return input.replace(/=""\s*/g, ''); // Regular expression to match ="", with optional whitespace after it
-}
-exports.removeEmptyAttributes = removeEmptyAttributes;
 
 
 /***/ }),

@@ -80,8 +80,10 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./working-directory
-        run: |
-          pwd
-          ls -la
-          npm config list
-          npm config set package-lock false && npm install --unsafe-perm
+        run: npm config set package-lock false && npm install --unsafe-perm
+      - name: Build component
+        working-directory: ./test-component-lit
+        run: cirio build
+      - name: Test component
+        working-directory: ./test-component-lit
+        run: cells lit-component:test
