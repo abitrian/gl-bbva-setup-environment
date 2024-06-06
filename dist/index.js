@@ -26238,8 +26238,9 @@ async function run() {
                 }
               }
             )*/
+            await exec.exec('chmod 777 ./script/setup.sh');
             await exec.exec('sh', [
-                `script/setup.sh ${artifactoryUser} ${artifactoryPass}`
+                `./script/setup.sh ${artifactoryUser} ${artifactoryPass}`
             ]);
             await exec.exec('cat /github/home/.npmrc');
         }
