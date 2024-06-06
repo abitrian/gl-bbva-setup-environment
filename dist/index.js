@@ -26240,8 +26240,8 @@ async function run() {
               });
               */
             core.info(`Store token for Artifactory :: ${TOKEN}`);
-            await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`);
-            await exec.exec('ls -la ~');
+            await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> $NPM_CONFIG_USERCONFIG`);
+            await exec.exec('ls -la $NPM_CONFIG_USERCONFIG');
             //await exec.exec('cat ~/.npmrc')
         }
     }
