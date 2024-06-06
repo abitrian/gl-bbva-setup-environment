@@ -64,7 +64,9 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           pwd
+          ls -la
           git clone https://$PAT@github.com/abitrian/test-component-lit.git working-directory
+          ls -la
 
       - name: Test Set up Action
         id: test-action

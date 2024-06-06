@@ -50,6 +50,9 @@ export async function run(): Promise<void> {
     }
 
     if (configureNpm) {
+      await exec.exec('pwd')
+      await exec.exec('ls -la')
+
       core.info('Set up Artifactory registry')
       await exec.exec(
         `npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`
@@ -83,6 +86,7 @@ export async function run(): Promise<void> {
       await exec.exec(
         `echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`
       )
+      await exec.exec('ls -la')
       //await exec.exec('cat ~/.npmrc')
     }
   } catch (error) {
