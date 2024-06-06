@@ -26224,6 +26224,8 @@ async function run() {
             }
         };
         if (configureNpm) {
+            await exec.exec('pwd');
+            await exec.exec('ls -la');
             core.info('Set up Artifactory registry');
             await exec.exec(`npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`);
             //exec.exec("cat ~/.npmrc");
@@ -26244,6 +26246,7 @@ async function run() {
               */
             core.info(`Store token for Artifactory :: ${TOKEN}`);
             await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> ~/.npmrc`);
+            await exec.exec('ls -la');
             //await exec.exec('cat ~/.npmrc')
         }
     }
