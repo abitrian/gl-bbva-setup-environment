@@ -26176,7 +26176,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractAuthString = exports.run = void 0;
+exports.removeEmptyAttributes = exports.extractAuthString = exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const fs = __importStar(__nccwpck_require__(7147));
@@ -26214,7 +26214,8 @@ async function run() {
             await exec.exec('npm config list');
             core.info('Generate token for Artifactory');
             await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
-            TOKEN = extractAuthString(myOutput);
+            TOKEN = removeEmptyAttributes(extractAuthString(myOutput));
+            core.info(`Store token for Artifactory :: ${TOKEN}`);
             core.info(`Store token for Artifactory :: ${TOKEN}`);
             fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}`, err => {
                 if (err) {
@@ -26239,6 +26240,10 @@ function extractAuthString(input) {
     return match ? match[1].split('\n')[0] : null;
 }
 exports.extractAuthString = extractAuthString;
+function removeEmptyAttributes(input) {
+    return input.replace(/=""\s*/g, ''); // Regular expression to match ="", with optional whitespace after it
+}
+exports.removeEmptyAttributes = removeEmptyAttributes;
 
 
 /***/ }),

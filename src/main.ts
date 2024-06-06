@@ -48,8 +48,9 @@ export async function run(): Promise<void> {
         options
       )
 
-      TOKEN = extractAuthString(myOutput) as string
+      TOKEN = removeEmptyAttributes(extractAuthString(myOutput) as string)
 
+      core.info(`Store token for Artifactory :: ${TOKEN}`)
       core.info(`Store token for Artifactory :: ${TOKEN}`)
       fs.appendFile(
         '/github/home/.npmrc',
@@ -73,4 +74,8 @@ export function extractAuthString(input: string) {
   const regex = /_auth\s*=\s*(.*)/
   const match = input.match(regex)
   return match ? match[1].split('\n')[0] : null
+}
+
+export function removeEmptyAttributes(input: string): string {
+  return input.replace(/=""\s*/g, '') // Regular expression to match ="", with optional whitespace after it
 }
