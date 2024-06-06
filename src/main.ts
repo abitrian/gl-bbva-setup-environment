@@ -43,7 +43,7 @@ export async function run(): Promise<void> {
 
       core.info('Generate token for Artifactory')
       await exec.exec(
-        `curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure  | grep _auth`,
+        `curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`,
         undefined,
         options
       )
@@ -51,9 +51,9 @@ export async function run(): Promise<void> {
       TOKEN = removeEmptyAttributes(extractAuthString(myOutput) as string)
 
       core.info(`Store token for Artifactory :: ${TOKEN}`)
-      fs.appendFile(
+      /*fs.appendFile(
         '/github/home/.npmrc',
-        `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:\\${TOKEN}`,
+        `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:${TOKEN}`,
         err => {
           if (err) {
             core.error(`Error appending config data to file: ${err.message}`)
@@ -72,7 +72,11 @@ export async function run(): Promise<void> {
             core.info('Config data successfully appended to config file.')
           }
         }
-      )
+      )*/
+
+      await exec.exec('sh', [
+        `res/scripts/setup.sh ${artifactoryUser} ${artifactoryPass}`
+      ])
 
       await exec.exec('cat /github/home/.npmrc')
     }

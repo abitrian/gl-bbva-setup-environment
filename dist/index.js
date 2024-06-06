@@ -26179,7 +26179,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.removeEmptyAttributes = exports.extractAuthString = exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
-const fs = __importStar(__nccwpck_require__(7147));
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -26213,26 +26212,35 @@ async function run() {
             await exec.exec(`npm config set registry https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/${repositoryNpm};`);
             await exec.exec('npm config list');
             core.info('Generate token for Artifactory');
-            await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure  | grep _auth`, undefined, options);
+            await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
             core.info('myOutput :: ' + myOutput);
             TOKEN = removeEmptyAttributes(extractAuthString(myOutput));
             core.info(`Store token for Artifactory :: ${TOKEN}`);
-            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:\\${TOKEN}`, err => {
+            /*fs.appendFile(
+              '/github/home/.npmrc',
+              `//artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/gl-bbva-npm-virtual/:${TOKEN}`,
+              err => {
                 if (err) {
-                    core.error(`Error appending config data to file: ${err.message}`);
+                  core.error(`Error appending config data to file: ${err.message}`)
+                } else {
+                  core.info('Config data successfully appended to config file.')
                 }
-                else {
-                    core.info('Config data successfully appended to config file.');
-                }
-            });
-            fs.appendFile('/github/home/.npmrc', `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:_authToken=${TOKEN}`, err => {
+              }
+            )
+            fs.appendFile(
+              '/github/home/.npmrc',
+              `//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:_authToken=${TOKEN}`,
+              err => {
                 if (err) {
-                    core.error(`Error appending config data to file: ${err.message}`);
+                  core.error(`Error appending config data to file: ${err.message}`)
+                } else {
+                  core.info('Config data successfully appended to config file.')
                 }
-                else {
-                    core.info('Config data successfully appended to config file.');
-                }
-            });
+              }
+            )*/
+            await exec.exec('sh', [
+                `res/scripts/setup.sh ${artifactoryUser} ${artifactoryPass}`
+            ]);
             await exec.exec('cat /github/home/.npmrc');
         }
     }
