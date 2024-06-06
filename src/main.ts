@@ -51,7 +51,7 @@ export async function run(): Promise<void> {
 
       core.info(`Store token for Artifactory :: ${TOKEN}`)
       await exec.exec(
-        `echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> /github/home/.npmrc`
+        `echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> /github/home/.npmrc`
       )
       await exec.exec('ls -la /github/home/.npmrc')
       await exec.exec('cat /github/home/.npmrc')

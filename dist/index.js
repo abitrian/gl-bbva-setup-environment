@@ -26215,7 +26215,7 @@ async function run() {
             await exec.exec(`curl -s -u${artifactoryUser}:${artifactoryPass} https://artifactory.globaldevtools.bbva.com:443/artifactory/api/npm/auth --insecure`, undefined, options);
             TOKEN = extractAuthString(myOutput);
             core.info(`Store token for Artifactory :: ${TOKEN}`);
-            await exec.exec(`echo //artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN} >> /github/home/.npmrc`);
+            await exec.exec(`echo "//artifactory.globaldevtools.bbva.com/artifactory/api/npm/:${TOKEN}" >> /github/home/.npmrc`);
             await exec.exec('ls -la /github/home/.npmrc');
             await exec.exec('cat /github/home/.npmrc');
         }
